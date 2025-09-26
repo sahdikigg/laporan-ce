@@ -1,0 +1,80 @@
+<%- include('partials/header', { title: 'Tambah Laporan' }) %>
+<section>
+  <a href="/laporan" class="btn small btn primary"><i class="bi bi-arrow-left"></i>Kembali</a>
+  <h2>Tambah Laporan</h2>
+
+  <!-- Container notifikasi -->
+  <div id="notif" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+
+  <!-- 🟢 id form harus sama dengan JS -->
+  <form id="laporanForm" enctype="multipart/form-data">
+    <div class="row">
+      <label>Judul Laporan<input name="judul" required></label>
+    </div>
+    <div class="row">
+      <label>Bulan <input name="month" required></label>
+      <label>Minggu <input name="week" required></label>
+      <label>Rentang Tanggal <input required type="text" name="rentang_tanggal" value="<%= laporan.rentang_tanggal || '' %>"></label>
+      <label>Tahun <input name="year" required type="number" value="<%= new Date().getFullYear() %>"></label>
+    </div>
+    <div class="row">
+      <label>Lokasi <input name="location" required></label>
+      <label>Tanggal Laporan <input type="date" name="report_date" value="<%= new Date().toISOString().slice(0,10) %>"></label>
+    </div>
+
+    <h3>Daftar Pekerjaan</h3>
+      <div id="itemsContainer"></div>
+      <button type="button" class="btn" id="btnAddItem">+ Tambah Pekerjaan</button>
+
+    <h3>Informasi pembangunan lainnya</h3>
+    <textarea name="other_info" id="other_info" rows="5"><%= (laporan && laporan.other_info) ? laporan.other_info : '' %></textarea>
+
+    <h3>Penutup</h3>
+    <textarea name="penutup" rows="3"><%= laporan.penutup || '' %></textarea>
+
+    <h3>Dibuat oleh</h3>
+    <div class="row">
+      <label>Nama <input name="created_by" required></label>
+      <label>Jabatan <input name="created_title"></label>
+    </div>
+
+    <div style="margin-top:12px">
+      <button class="btn primary" type="submit">Simpan</button>
+      <a class="btn" href="/laporan">Batal</a>
+    </div>
+  </form>
+</section>
+<script>
+  const container = document.getElementById('itemsContainer');
+  const btnAdd = document.getElementById('btnAddItem');
+
+  btnAdd.addEventListener('click', () => {
+    const idx = container.children.length;
+
+    const div = document.createElement('div');
+    div.className = 'item-row';
+    div.innerHTML = `
+      <label>No ${idx + 1}</label>
+      <input name="pekerjaan[]" placeholder="Pekerjaan" required>
+      <input name="kontraktor[]" placeholder="Kontraktor">
+      <textarea name="keterangan[]" placeholder="Keterangan"></textarea>
+
+      <input type="file" name="gambar_${idx}[]" multiple>
+      <button type="button" class="btn danger small" onclick="this.parentNode.remove(); reorderItems()">Hapus</button>
+    `;
+    container.appendChild(div);
+    reorderItems();
+  });
+
+  function reorderItems() {
+    const items = document.querySelectorAll('#itemsContainer .item-row');
+    items.forEach((row, i) => {
+      row.querySelector('label').innerText = `No ${i + 1}`;
+      const fileInput = row.querySelector('input[type=file]');
+      if (fileInput) fileInput.name = `gambar_${i}[]`;
+    });
+  }
+</script>
+
+
+<%- include('partials/footer') %>

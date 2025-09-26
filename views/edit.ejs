@@ -1,0 +1,139 @@
+<%- include('partials/header', { title: 'Edit Laporan' }) %>
+
+<section>
+  <h2>Edit Laporan</h2>
+  <form id="laporanForm" enctype="multipart/form-data">
+    <div class="row">
+      <label>Judul Laporan<input name="judul" value="<%= laporan.judul %>" required></label>
+    </div>
+    <div class="row">
+      <label>Bulan <input name="month" value="<%= laporan.month %>" required></label>
+      <label>Minggu <input name="week" value="<%= laporan.week %>" required></label>
+      <label>Rentang Tanggal <input required type="text" name="rentang_tanggal" value="<%= laporan.rentang_tanggal || '' %>"></label>
+      <label>Tahun <input name="year" value="<%= laporan.year %>" type="number" required></label>
+    </div>
+    <div class="row">
+      <label>Lokasi <input name="location" value="<%= laporan.location %>"></label>
+      <label>Tanggal Laporan 
+        <input type="date" name="report_date" 
+          value="<%= laporan.report_date ? laporan.report_date.toISOString().slice(0,10) : '' %>">
+      </label>
+    </div>
+
+    <h3>Daftar Pekerjaan</h3>
+      <div id="itemsContainer">
+        <% (laporan.items || []).forEach((it, idx) => { %>
+          <div class="item-row">
+            <label>No <%= it.no %></label>
+            <input name="pekerjaan" value="<%= it.pekerjaan %>">
+            <input name="kontraktor" value="<%= it.kontraktor %>">
+            <textarea name="keterangan"><%= it.keterangan %></textarea>
+
+            <% if (it.gambar && it.gambar.length) { %>
+              <div class="gambar-list" style="display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0;">
+                <% it.gambar.forEach((g, gi) => { %>
+                  <div class="gambar-item" style="border:1px solid #ddd; padding:8px; border-radius:6px; width:140px; text-align:center; background:#fafafa;">
+                    <img src="<%= g %>" width="120" style="border-radius:4px; margin-bottom:6px;">
+
+                    <div style="font-size: 12px; margin-bottom:4px; color:#666;">
+                      Gambar <%= gi + 1 %>
+                    </div>
+
+                    <!-- checkbox hapus -->
+                    <label style="font-size:12px; color:#c00;">
+                      <input type="checkbox" name="hapus_gambar[<%= it.no - 1 %>][]" value="<%= g %>">
+                      Hapus
+                    </label>
+
+                    <!-- hidden supaya data lama tetap ada jika tidak dihapus -->
+                    <input type="hidden" name="gambar_lama[<%= it.no - 1 %>][]" value="<%= g %>">
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+
+            <input type="file" name="gambar_<%= it.no - 1 %>[]" multiple>
+            <button type="button" class="btn danger small" onclick="this.parentNode.remove(); reorderItems()">Hapus</button>
+          </div>
+
+        <% }) %>
+      </div>
+      <button type="button" class="btn" onclick="addItem()">Tambah Pekerjaan</button>
+
+
+    <h3>Informasi pembangunan lainnya</h3>
+    <textarea name="other_info" rows="4"><%= laporan.other_info || '' %></textarea>
+
+    <h3>Penutup</h3>
+    <textarea name="penutup" rows="3"><%= laporan.penutup || '' %></textarea>
+
+    <h3>Dibuat oleh</h3>
+    <div class="row">
+      <label>Nama <input name="created_by" value="<%= laporan.created_by %>" required></label>
+      <label>Jabatan <input name="created_title" value="<%= laporan.created_title %>"></label>
+    </div>
+
+    <div style="margin-top:12px">
+      <button class="btn primary" type="submit">Update</button>
+      <a class="btn" href="/laporan">Batal</a>
+    </div>
+  </form>
+
+</section>
+
+<script>
+  // flag global supaya footer tahu swal sudah dipanggil
+  window.fromEditForm = false;
+
+  const form = document.getElementById('laporanForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+
+    const res = await fetch('/laporan/edit/<%= laporan.id %>', {
+      method: 'POST',
+      body: fd
+    });
+    const data = await res.json();
+    if (data.success) {
+      setTimeout(() => {
+        window.location.href = '/laporan/<%= laporan.id %>';
+      }, 1600); // jeda 1,5 detik sebelum pindah
+    } else {
+      alert('Gagal update');
+    }
+  });
+
+  function addItem() {
+    const container = document.getElementById('itemsContainer');
+    const idx = container.children.length;
+
+    const div = document.createElement('div');
+    div.className = 'item-row';
+    div.innerHTML = `
+      <label>No ${idx + 1}</label>
+      <input name="pekerjaan[]" placeholder="Pekerjaan">
+      <input name="kontraktor[]" placeholder="Kontraktor">
+      <textarea name="keterangan[]" placeholder="Keterangan"></textarea>
+
+      <input type="file" name="gambar_${idx}[]" multiple>
+      <input type="hidden" name="gambar_lama[]" value="">
+
+      <button type="button" class="btn danger small" onclick="this.parentNode.remove(); reorderItems()">Hapus</button>
+    `;
+    container.appendChild(div);
+    reorderItems();
+  }
+
+  function reorderItems() {
+    const items = document.querySelectorAll('#itemsContainer .item-row');
+    items.forEach((row, i) => {
+      row.querySelector('label').innerText = `No ${i + 1}`;
+      const fileInput = row.querySelector('input[type=file]');
+      if (fileInput) fileInput.name = `gambar_${i}[]`;
+    });
+  }
+</script>
+
+
+<%- include('partials/footer') %>

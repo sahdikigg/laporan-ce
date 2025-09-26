@@ -1,0 +1,54 @@
+<%- include('partials/header', { title: 'Daftar Laporan' }) %>
+
+<section class="laporan-section">
+  <div class="laporan-header">
+    <h2>📑 Daftar Laporan</h2>
+    <a href="/laporan/add" class="btn primary">+ Tambah Laporan</a>
+  </div>
+
+  <!-- Container notifikasi -->
+  <div id="notif" class="notif-container"></div>
+
+  <div class="table-wrapper">
+    <table class="laporan-table" id="laporanTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Bulan</th>
+          <th>Minggu</th>
+          <th>Tahun</th>
+          <th>Lokasi</th>
+          <th>Tanggal</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (laporan && laporan.length > 0) { %>
+          <% laporan.forEach(l => { %>
+            <tr id="row-<%= l.id %>">
+              <td><%= l.id %></td>
+              <td><%= l.month %></td>
+              <td><%= l.week %></td>
+              <td><%= l.year %></td>
+              <td><%= l.location %></td>
+              <td>
+                <%= l.report_date 
+                      ? new Date(l.report_date).toISOString().slice(0,10) 
+                      : '' %>
+              </td>
+              <td class="aksi">
+                <a href="/laporan/<%= l.id %>" class="btn small info">Detail</a>
+                <a href="/laporan/edit/<%= l.id %>" class="btn small warning">Edit</a>
+                <a href="javascript:void(0)" class="btn small danger" onclick="deleteLaporan('<%= l.id %>')" class="btn danger">Hapus</a>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="7" class="no-data">Belum ada laporan</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

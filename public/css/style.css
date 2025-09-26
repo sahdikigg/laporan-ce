@@ -1,0 +1,191 @@
+:root{
+  --primary:#0b5ed7; --danger:#d6333f; --muted:#666;
+  --card-bg:#fff; --bg:#f5f7fb;
+  font-family: Inter, system-ui, Arial, sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#222}
+.container{max-width:1100px;margin:18px auto;padding:16px}
+.topbar{background:#fff;padding:12px 0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.topbar .container{display:flex;align-items:center;justify-content:space-between}
+.topbar h1{margin:0;font-size:18px}
+nav a{color:var(--muted);text-decoration:none;margin-left:8px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{background:var(--card-bg);padding:12px;border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+.card-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.btn{background:#eee;padding:6px 10px;border-radius:6px;text-decoration:none;color:#111;border:none;cursor:pointer}
+.btn.primary{background:var(--primary);color:#fff}
+.btn.danger{background:var(--danger);color:#fff}
+.btn.small{padding:4px 8px;font-size:12px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+label{display:block;flex:1;min-width:180px}
+input,textarea{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+.item-row{background:#fbfcff;padding:8px;border-radius:6px;margin-bottom:8px;border:1px solid #eef}
+.footer{padding:12px;text-align:center;color:#777;font-size:13px;margin-top:18px}
+@media (max-width:720px){
+  .row{flex-direction:column}
+}
+.img-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.img-row img {
+  object-fit: cover;
+}
+/* update */
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f5f6fa;
+  margin: 0;
+  padding: 20px;
+}
+
+/* Section wrapper */
+.laporan-section {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.laporan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pt-2 {padding-top: 8px;}
+.mt-2 {margin-top: 8px;}
+/* Table container */
+.table-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 16px;
+  overflow-x: auto;
+}
+
+/* Table */
+.laporan-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 600px;
+}
+
+.laporan-table thead tr {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.laporan-table th, 
+.laporan-table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.laporan-table tbody tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.laporan-table tbody tr:hover {
+  background: #f1f1f1;
+}
+
+.no-data {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 2px;
+  box-shadow: 0 3px rgba(0,0,0,0.2);
+  transition: all 0.15s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px rgba(0,0,0,0.2);
+}
+
+.btn.primary {
+  background: linear-gradient(180deg, #2196F3, #1976D2);
+  color: white;
+}
+
+.btn.info {
+  background: linear-gradient(180deg, #9E9E9E, #616161);
+  color: white;
+}
+
+.btn.warning {
+  background: linear-gradient(180deg, #FFB300, #F57C00);
+  color: white;
+}
+
+.btn.danger {
+  background: linear-gradient(180deg, #e53935, #c62828);
+  color: white;
+}
+
+.btn.small {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+/* Notifikasi toast */
+.notif-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.toast {
+  margin-bottom: 8px;
+  padding: 12px 18px;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  animation: slideIn 0.4s ease;
+}
+
+.toast.success { background: #4caf50; }
+.toast.danger { background: #f44336; }
+
+.toast.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+  .laporan-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn.primary {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+

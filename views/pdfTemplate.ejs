@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= data.title %></title>
+  <style>
+    /* Pastikan ukuran kertas A4 */
+    @page {
+      size: A4;
+      margin: 7.5mm 15mm 7.5mm 15mm; /* margin dalam mm, biar presisi */
+      align-content: center;
+      border: 3px double #000000;
+      box-sizing: border-box;
+      padding-top: 4.5mm;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+      margin: 5px;          /* reset margin default */
+      padding: 3mm;      /* padding sesuai margin A4 */
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+      margin: 4px 0;
+    }
+
+    /* Cover */
+    .square {
+      margin-top: -17px;
+      min-width: 500px;
+      height: 140px;
+      background-color: #0969be;
+    }
+    .fajar {
+      align-self: center;
+      color: white;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px;
+      margin-top: 60mm;
+    }
+    .square2 {
+      min-width: 500px;
+      margin-bottom: 20mm;
+      height: 568px;
+      background-color: #0969be;
+      color: white;
+      padding-bottom: 30px;
+      text-transform: uppercase;
+    }
+    .isi-square {
+      flex-direction: column;
+      display: flex;
+      place-items: center;
+    }
+    .judul{
+      margin-top: 25mm;
+      margin-bottom: 25mm;
+      font-size: 42px;
+      font-weight: bolder;
+      letter-spacing: 2px;
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+    .info {
+      top: -30px;
+      font-size: 20px;
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+    .info2 {
+      margin-top: -30px;
+      font-size: 20px;
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+    .gambar {
+      margin-top: 45mm;
+    }
+    /* end cover */
+    /* Cover dalam */
+    .isi {
+      padding-top: 2mm;
+    }
+    .item {
+      margin-bottom: 10px;
+      page-break-inside: avoid; /* biar 1 pekerjaan tidak terpotong halaman */
+    }
+    .item img {
+      width: 290px;          /* fix lebar */
+      height: 260px;         /* fix tinggi */
+      margin: 3px 1px -5px 1px;
+      margin: 3px;
+      border: 1px solid #ccc;
+      display: inline-block;
+      object-fit: cover;     /* crop gambar biar sesuai kotak */
+      object-position: center; /* pastikan crop di tengah */
+    }
+    .item-pp {
+      padding-top: 11px;
+      margin-bottom: 4px;
+    }
+    .card {
+      width: 635px;
+      height: 285px;
+      justify-content: center;
+    }
+    .sign {
+      margin: -10px;
+    }
+    .sign img {
+      width: 90px;          /* fix lebar */
+      height: auto;         /* fix tinggi */
+      object-fit: cover;     /* crop gambar biar sesuai kotak */
+      object-position: center; /* pastikan crop di tengah */
+    }
+    .paragraf-rapi {
+        text-indent: 3em;
+        line-height: 1.6;
+        text-align: justify;
+    }
+    .footer {
+      margin-top: 60px;
+      text-align: left;
+      page-break-inside: avoid;
+    }
+  </style>
+</head>
+<body>
+  <div class="square"></div>
+  <h3 class="judul"><%= data.title %></h3>
+  <div class="square2">
+    <div class="isi-square">
+      <div class="info">
+        <p><%= data.month %> MINGGU KE-<%= data.week %></p>
+      </div>
+      <div class="info2">
+        <p><%= data.rentang_tanggal %> <%= data.year %></p>
+      </div>
+      <div class="gambar">
+        <img style="width: 190px; margin-bottom: -180px;" src="http://localhost:3000/uploads/FSL.png" alt="FSL">
+      </div>
+      <div class="fajar">
+        <h2>PT. FAJAR SAUDARA LESTARI</h2>
+      </div>
+    </div>
+  </div>
+  <div class="isi">
+    <h3>LAPORAN PEMBANGUNAN DIVISI CIVIL ENGINEERING</h3>
+    <h3 style="margin-top: 5mm; text-transform: uppercase;">bulan <%= data.month %> MINGGU KE-<%= data.week %> tahun <%= data.year %></h3>
+  </div>
+
+  <% (data.items || []).forEach((it) => { %>
+  <div class="item">
+    <p class="item-pp"><%= it.no %>. <%= it.pekerjaan %> (Kontraktor: <%= it.kontraktor %>)</p>
+    <div class="card">
+      <% if (it.gambar && it.gambar.length) { %>
+        <% it.gambar.forEach((g) => { %>
+          <img src="<%= g %>"/>
+        <% }) %>
+      <% } %>
+    </div>
+    <p style="margin-top: -15px; line-height: 1.6; text-align: justify;">Keterangan: <%= it.keterangan %></p>
+  </div>
+<% }) %>
+
+<% const nextNo = (data.items?.length || 0) + 1; %>
+<div class="item">
+  <p><%= nextNo %>. Informasi pembangunan lainnya</p>
+  <div style="margin-left:10px;">
+    <%
+      const lines = (data.other_info || '')
+        .split('\n')
+        .map(l => l.trim())
+        .filter(l => l);
+
+      let inList = false;
+    %>
+    <% lines.forEach((line, idx) => { %>
+      <% if (/^\d+\./.test(line)) { %>
+        <% if (!inList) { inList = true; %>
+          <ol style="margin-left:20px; padding-left:20px; line-height: 1.6;">
+        <% } %>
+        <li><%= line.replace(/^\d+\.\s*/, '') %></li>
+        <% if (idx === lines.length - 1) { inList = false; %></ol><% } %>
+      <% } else { %>
+        <% if (inList) { inList = false; %></ol><% } %>
+        <p><%= line %></p>
+      <% } %>
+    <% }) %>
+    <% if (inList) { %></ol><% } %>
+  </div>
+</div>
+
+<p class="paragraf-rapi"><%= data.penutup || '-' %></p>
+  <div class="footer paragraf-rapi">
+    <p style="margin-bottom: -16px;">Batu Ampar, <%= data.report_date 
+        ? new Date(data.report_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) 
+        : '' %></p>
+    <p>Dibuat oleh,</p>
+    <div class="sign">
+      <img src="http://localhost:3000/uploads/sign-removebg-preview.png" alt="sign">
+    </div>
+    <p style="margin-bottom: -15px;"><%= data.created_by %></p>
+    <p><%= data.created_title %></p>
+  </div>
+</body>
+<script>
+        // Set base URL berdasarkan environment
+        document.addEventListener('DOMContentLoaded', function() {
+            const isPDFExport = window.location.protocol === 'file:' || 
+                               window.location.hostname === '';
+            
+            const baseTag = document.createElement('base');
+            
+            if (isPDFExport) {
+                baseTag.href = './'; // Untuk PDF export
+            } else {
+                baseTag.href = 'http://localhost:3000/'; // Untuk development
+            }
+            
+            document.head.appendChild(baseTag);
+        });
+    </script>
+</html>

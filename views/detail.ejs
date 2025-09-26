@@ -1,0 +1,66 @@
+<%- include('partials/header', { title: 'Detail Laporan' }) %>
+
+<section class="laporan-detail">
+  <div class="card mt-2">
+    <h2>📄 Detail Laporan</h2>
+    <div class="detail-grid">
+      <p><strong>Judul Laporan:</strong> <%= laporan.judul %></p>
+      <p><strong>Bulan:</strong> <%= laporan.month %></p>
+      <p><strong>Minggu:</strong> <%= laporan.week %></p>
+      <p><strong>Rentang tanggal:</strong> <%= laporan.rentang_tanggal %></p>
+      <p><strong>Tahun:</strong> <%= laporan.year %></p>
+      <p><strong>Lokasi:</strong> <%= laporan.location %></p>
+      <p><strong>Tanggal Laporan:</strong> 
+        <%= laporan.report_date ? new Date(laporan.report_date).toLocaleDateString() : '-' %>
+      </p>
+    </div>
+  </div>
+
+  <div class="card mt-2">
+    <h3>🛠️ Daftar Pekerjaan</h3>
+    <% if (laporan.items && laporan.items.length > 0) { %>
+      <ol class="job-list">
+        <% laporan.items.forEach(it => { %>
+          <li class="job-item">
+            <p><strong>Pekerjaan:</strong> <%= it.pekerjaan %></p>
+            <p><strong>Kontraktor:</strong> <%= it.kontraktor %></p>
+            <p><strong>Keterangan:</strong> <%= it.keterangan %></p>
+
+            <% if (it.gambar && it.gambar.length > 0) { %>
+              <div class="img-row">
+                <% it.gambar.forEach(g => { %>
+                  <img src="<%= g %>" alt="foto pekerjaan" style="max-width:120px; margin:4px; border:1px solid #ccc; border-radius:6px;">
+                <% }) %>
+              </div>
+            <% } %>
+          </li>
+        <% }) %>
+      </ol>
+    <% } else { %>
+      <p class="no-data">Belum ada pekerjaan</p>
+    <% } %>
+  </div>
+  <div class="card mt-2">
+    <h3>ℹ️ Informasi Tambahan</h3>
+    <p><%= laporan.other_info || '-' %></p>
+  </div>
+
+  <div class="card mt-2">
+    <h3>ℹ️ Penutup</h3>
+    <p><%= laporan.penutup || '-' %></p>
+  </div>
+
+  <div class="card mt-2">
+    <h3>👤 Dibuat oleh</h3>
+    <p><%= laporan.created_by %> — <%= laporan.created_title %></p>
+  </div>
+
+  <div class="card-actions">
+    <!-- <a href="/laporan/export/<%= laporan.id %>" class="btn primary">Download PDF</a> -->
+    <a class="btn primary" href="/laporan/export/<%= laporan.id %>">⬇ Export PDF</a>
+    <a class="btn warning" href="/laporan/edit/<%= laporan.id %>">✏ Edit</a>
+    <a class="btn info" href="/laporan">⬅ Kembali</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
