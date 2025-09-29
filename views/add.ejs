@@ -42,11 +42,82 @@
       <button class="btn primary" type="submit">Simpan</button>
       <a class="btn" href="/laporan">Batal</a>
     </div>
+    <!-- Loader -->
+<div id="loader">
+  <div>
+    <div class="spinner"></div>
+    <p>Menyimpan...</p>
+  </div>
+</div>
+
+<style>
+  /* Loader hidden by default */
+  #loader {
+    display: none; 
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(255,255,255,0.7);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+  }
+  #loader .spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: auto;
+  }
+  #loader p {
+    text-align: center;
+    margin-top: 10px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
   </form>
 </section>
 <script>
   const container = document.getElementById('itemsContainer');
   const btnAdd = document.getElementById('btnAddItem');
+  const form = document.querySelector("form"); 
+  const loader = document.getElementById("loader");
+  const notif = document.getElementById("notif");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault(); // cegah reload default
+    loader.style.display = "flex"; // tampilkan loader
+
+    const formData = new FormData(form);
+
+    try {
+      const res = await fetch(form.action || "/laporan/add", {
+        method: "POST", // 🔴 paksa POST supaya bisa kirim body
+        body: formData
+      });
+
+      const data = await res.json();
+      loader.style.display = "none"; // sembunyikan loader
+
+      // if (data.success) {
+      //   notif.innerHTML = `<div class="alert success" style="display:none;">Data berhasil disimpan!</div>`;
+      //   form.reset();
+      //   container.innerHTML = "";
+      // } else {
+      //   notif.innerHTML = `<div class="alert danger" style="display:none;">${data.message || "Gagal menyimpan data"}</div>`;
+      // }
+    } catch (err) {
+      loader.style.display = "none"; 
+      notif.innerHTML = `<div class="alert danger">Terjadi error: ${err.message}</div>`;
+    }
+  });
 
   btnAdd.addEventListener('click', () => {
     const idx = container.children.length;
