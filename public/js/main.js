@@ -1,4 +1,3 @@
-// main.js
 (() => {
   const haveSwal = typeof Swal !== 'undefined';
   if (!haveSwal) console.warn('SweetAlert2 belum dimuat — pastikan CDN <script> dimuat sebelum main.js');
@@ -13,36 +12,31 @@
     alert('Error: ' + msg);
   };
 
-  // Buat 1 item pekerjaan
-  function createItemElement(prefill = {}) {
-    const container = document.getElementById('itemsContainer');
-    const idx = container.children.length;
-    const div = document.createElement('div');
-    div.className = 'item-row';
-    div.innerHTML = `
-      <label>No ${idx + 1}</label>
-      <input name="pekerjaan[]" placeholder="Pekerjaan" value="${prefill.pekerjaan || ''}">
-      <input name="kontraktor[]" placeholder="Kontraktor" value="${prefill.kontraktor || ''}">
-      <textarea name="keterangan[]" placeholder="Keterangan">${prefill.keterangan || ''}</textarea>
-      <input type="file" name="gambar_${idx}[]" multiple>
-      <button type="button" class="btn danger small btn-remove">Hapus</button>
-    `;
-    // Hapus row
-    div.querySelector('.btn-remove').addEventListener('click', () => {
-      div.remove();
-      reorderItems();
-    });
-    container.appendChild(div);
-    reorderItems();
-    return div;
-  }
+  // 🔹 Tambah pekerjaan (hanya 1 versi, tidak pakai createItemElement lagi)
+  document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("itemsContainer");
+    const btnAdd = document.getElementById("btnAddItem");
 
-  // Public addItem
-  window.addItem = function (prefill = {}) {
-    return createItemElement(prefill);
-  };
+    if (btnAdd && container) {
+      btnAdd.addEventListener("click", () => {
+        const idx = container.children.length;
+        const div = document.createElement("div");
+        div.className = "item-row";
+        div.innerHTML = `
+          <label>No ${idx + 1}</label>
+          <input name="pekerjaan[]" placeholder="Pekerjaan" required>
+          <input name="kontraktor[]" placeholder="Kontraktor">
+          <textarea name="keterangan[]" placeholder="Keterangan"></textarea>
+          <input type="file" name="gambar_${idx}[]" multiple>
+          <button type="button" class="btn danger small" onclick="this.parentNode.remove(); reorderItems()">Hapus</button>
+        `;
+        container.appendChild(div);
+        reorderItems();
+      });
+    }
+  });
 
-  // Reorder nomor urut
+  // 🔹 Reorder nomor urut
   window.reorderItems = function () {
     const items = document.querySelectorAll('#itemsContainer .item-row');
     items.forEach((it, i) => {
@@ -53,13 +47,7 @@
     });
   };
 
-  // Init
-  document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('itemsContainer');
-    if (container && container.children.length === 0) addItem();
-  });
-
-  // Form submit
+  // 🔹 Form submit
   (function attachFormHandler() {
     const form = document.getElementById('laporanForm');
     if (!form) return;
@@ -90,7 +78,6 @@
           showSuccess(data.message || 'Data berhasil disimpan');
           form.reset();
           document.getElementById('itemsContainer').innerHTML = '';
-          addItem();
         } else {
           showError(data.message || 'Gagal menyimpan data');
         }
@@ -101,7 +88,7 @@
     });
   })();
 
-  // Delete laporan
+  // 🔹 Delete laporan
   window.deleteLaporan = async function (id) {
     if (!id) {
       showError('ID laporan tidak ditemukan');

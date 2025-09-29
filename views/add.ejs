@@ -1,4 +1,5 @@
 <%- include('partials/header', { title: 'Tambah Laporan' }) %>
+
 <section>
   <a href="/laporan" class="btn small btn primary"><i class="bi bi-arrow-left"></i>Kembali</a>
   <h2>Tambah Laporan</h2>
@@ -6,8 +7,7 @@
   <!-- Container notifikasi -->
   <div id="notif" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
 
-  <!-- 🟢 id form harus sama dengan JS -->
-  <form id="laporanForm" enctype="multipart/form-data">
+  <form id="laporanForm" enctype="multipart/form-data" action="/laporan/add" method="POST">
     <div class="row">
       <label>Judul Laporan<input name="judul" required></label>
     </div>
@@ -23,8 +23,8 @@
     </div>
 
     <h3>Daftar Pekerjaan</h3>
-      <div id="itemsContainer"></div>
-      <button type="button" class="btn" id="btnAddItem">+ Tambah Pekerjaan</button>
+    <div id="itemsContainer"></div>
+    <button type="button" class="btn" id="btnAddItem">+ Tambah Pekerjaan</button>
 
     <h3>Informasi pembangunan lainnya</h3>
     <textarea name="other_info" id="other_info" rows="5"><%= (laporan && laporan.other_info) ? laporan.other_info : '' %></textarea>
@@ -42,18 +42,20 @@
       <button class="btn primary" type="submit">Simpan</button>
       <a class="btn" href="/laporan">Batal</a>
     </div>
+
     <!-- Loader -->
-<div id="loader">
-  <div>
-    <div class="spinner"></div>
-    <p>Menyimpan...</p>
-  </div>
-</div>
+    <div id="loader">
+      <div>
+        <div class="spinner"></div>
+        <p>Menyimpan...</p>
+      </div>
+    </div>
+  </form>
+</section>
 
 <style>
-  /* Loader hidden by default */
   #loader {
-    display: none; 
+    display: none;
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
@@ -82,70 +84,5 @@
     100% { transform: rotate(360deg); }
   }
 </style>
-  </form>
-</section>
-<script>
-  const container = document.getElementById('itemsContainer');
-  const btnAdd = document.getElementById('btnAddItem');
-  const form = document.querySelector("form"); 
-  const loader = document.getElementById("loader");
-  const notif = document.getElementById("notif");
-
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault(); // cegah reload default
-    loader.style.display = "flex"; // tampilkan loader
-
-    const formData = new FormData(form);
-
-    try {
-      const res = await fetch(form.action || "/laporan/add", {
-        method: "POST", // 🔴 paksa POST supaya bisa kirim body
-        body: formData
-      });
-
-      const data = await res.json();
-      loader.style.display = "none"; // sembunyikan loader
-
-      // if (data.success) {
-      //   notif.innerHTML = `<div class="alert success" style="display:none;">Data berhasil disimpan!</div>`;
-      //   form.reset();
-      //   container.innerHTML = "";
-      // } else {
-      //   notif.innerHTML = `<div class="alert danger" style="display:none;">${data.message || "Gagal menyimpan data"}</div>`;
-      // }
-    } catch (err) {
-      loader.style.display = "none"; 
-      notif.innerHTML = `<div class="alert danger">Terjadi error: ${err.message}</div>`;
-    }
-  });
-
-  btnAdd.addEventListener('click', () => {
-    const idx = container.children.length;
-
-    const div = document.createElement('div');
-    div.className = 'item-row';
-    div.innerHTML = `
-      <label>No ${idx + 1}</label>
-      <input name="pekerjaan[]" placeholder="Pekerjaan" required>
-      <input name="kontraktor[]" placeholder="Kontraktor">
-      <textarea name="keterangan[]" placeholder="Keterangan"></textarea>
-
-      <input type="file" name="gambar_${idx}[]" multiple>
-      <button type="button" class="btn danger small" onclick="this.parentNode.remove(); reorderItems()">Hapus</button>
-    `;
-    container.appendChild(div);
-    reorderItems();
-  });
-
-  function reorderItems() {
-    const items = document.querySelectorAll('#itemsContainer .item-row');
-    items.forEach((row, i) => {
-      row.querySelector('label').innerText = `No ${i + 1}`;
-      const fileInput = row.querySelector('input[type=file]');
-      if (fileInput) fileInput.name = `gambar_${i}[]`;
-    });
-  }
-</script>
-
 
 <%- include('partials/footer') %>
