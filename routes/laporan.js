@@ -3,6 +3,9 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const laporanController = require('../controllers/laporanController');
+const sharp = require("sharp");
+const fs = require("fs");
+const path = require("path");
 
 // === Konfigurasi multer (deklarasi SEKALI) ===
 const storage = multer.diskStorage({
@@ -13,38 +16,6 @@ const upload = multer({ storage });
 
 // === Debug cepat: tampilkan fungsi yang ada di controller ===
 console.log('Loaded laporanController handlers:', Object.keys(laporanController));
-const sharp = require("sharp");
-const fs = require("fs");
-const path = require("path");
-
-router.post("/add", upload.any(), async (req, res, next) => {
-  try {
-    if (req.files && req.files.length > 0) {
-      for (const file of req.files) {
-        const outputPath = path.join("public/uploads", "compressed-" + file.filename);
-
-        // resize + compress
-        await sharp(file.path)
-          .resize(800, 600, { fit: "inside" }) // max width 800px, height 600px
-          .jpeg({ quality: 70 })              // ubah ke JPEG kualitas 70%
-          .toFile(outputPath);
-
-        // hapus file asli biar hemat storage
-        fs.unlinkSync(file.path);
-
-        // ganti path file ke versi compressed
-        file.path = outputPath;
-        file.filename = "compressed-" + file.filename;
-      }
-    }
-
-    next(); // lanjut ke controller
-  } catch (err) {
-    console.error("Error compress gambar:", err);
-    res.status(500).json({ success: false, message: "Gagal compress gambar" });
-  }
-});
-
 
 // Daftar handler yang kita harapkan ada (sesuaikan jika kamu pakai nama berbeda)
 const expectedHandlers = [
@@ -58,7 +29,6 @@ const expectedHandlers = [
   'exportPDF'
 ];
 
-// Cek setiap handler; jika ada yang bukan function, tampilkan error jelas
 expectedHandlers.forEach(fn => {
   if (typeof laporanController[fn] !== 'function') {
     console.error(`\x1b[31mERROR:\x1b[0m laporanController.${fn} is not a function (undefined). Check controllers/laporanController.js`);
@@ -69,17 +39,39 @@ expectedHandlers.forEach(fn => {
 router.get('/', laporanController.list);
 router.get('/add', laporanController.showAddForm);
 
-// Gunakan upload.any() jika nama field file dinamis (gambar_0, gambar_1, ...)
-router.post('/add', upload.any(), laporanController.createLaporan);
+// ✅ SATUKAN upload + compress + controller di sini
+router.post('/add', upload.any(), async (req, res, next) => {
+  try {
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const outputPath = path.join("public/uploads", "compressed-" + file.filename);
+
+        await sharp(file.path)
+          .resize(800, 600, { fit: "inside" })  // resize max 800x600
+          .jpeg({ quality: 70 })                // compress jpeg
+          .toFile(outputPath);
+
+        fs.unlinkSync(file.path); // hapus file asli
+
+        // update path biar controller pakai versi compressed
+        file.path = outputPath;
+        file.filename = "compressed-" + file.filename;
+      }
+    }
+    // teruskan ke controller
+    laporanController.createLaporan(req, res);
+  } catch (err) {
+    console.error("Error compress gambar:", err);
+    res.status(500).json({ success: false, message: "Gagal compress gambar" });
+  }
+});
 
 router.get('/:id', laporanController.getLaporan);
 router.get('/edit/:id', laporanController.showEditForm);
 router.post('/edit/:id', upload.any(), laporanController.updateLaporan);
-// Hapus bisa pake POST atau DELETE tergantung route yang kamu pakai di client
 router.delete('/delete/:id', laporanController.deleteLaporan);
 
 // Export
-// router.get('/:id/export', laporanController.exportPDF);
 router.get('/export/:id', laporanController.exportPDF);
 
 module.exports = router;
