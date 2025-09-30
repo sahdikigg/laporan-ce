@@ -13,6 +13,38 @@ const upload = multer({ storage });
 
 // === Debug cepat: tampilkan fungsi yang ada di controller ===
 console.log('Loaded laporanController handlers:', Object.keys(laporanController));
+const sharp = require("sharp");
+const fs = require("fs");
+const path = require("path");
+
+router.post("/add", upload.any(), async (req, res, next) => {
+  try {
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const outputPath = path.join("public/uploads", "compressed-" + file.filename);
+
+        // resize + compress
+        await sharp(file.path)
+          .resize(800, 600, { fit: "inside" }) // max width 800px, height 600px
+          .jpeg({ quality: 70 })              // ubah ke JPEG kualitas 70%
+          .toFile(outputPath);
+
+        // hapus file asli biar hemat storage
+        fs.unlinkSync(file.path);
+
+        // ganti path file ke versi compressed
+        file.path = outputPath;
+        file.filename = "compressed-" + file.filename;
+      }
+    }
+
+    next(); // lanjut ke controller
+  } catch (err) {
+    console.error("Error compress gambar:", err);
+    res.status(500).json({ success: false, message: "Gagal compress gambar" });
+  }
+});
+
 
 // Daftar handler yang kita harapkan ada (sesuaikan jika kamu pakai nama berbeda)
 const expectedHandlers = [
