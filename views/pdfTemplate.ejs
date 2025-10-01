@@ -43,7 +43,7 @@
     .square2 {
       min-width: 500px;
       margin-bottom: 20mm;
-      height: 566px;
+      height: 600px;
       background-color: #0969be;
       color: white;
       padding-bottom: 30px;
@@ -54,10 +54,15 @@
       display: flex;
       place-items: center;
     }
+    .card-judul {
+      height: 258px !important;
+      padding-left: 10mm;
+      padding-right: 10mm;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
     .judul{
-      margin-top: 14mm;
-      margin-bottom: 14mm;
-      padding: 20px;
       font-size: 49px;
       font-weight: bolder;
       letter-spacing: 2px;
@@ -69,7 +74,7 @@
       font-family: 'Anton', Arial, sans-serif;
     }
     .info2 {
-      margin-top: -30px;
+      margin-top: -35px;
       font-size: 20px;
       font-family: 'Anton', Arial, sans-serif;
     }
@@ -109,9 +114,14 @@
     }
     .sign img {
       width: 90px;          /* fix lebar */
+      margin-left: 6px;
       height: auto;         /* fix tinggi */
       object-fit: cover;     /* crop gambar biar sesuai kotak */
       object-position: center; /* pastikan crop di tengah */
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
     }
     .paragraf-rapi {
         text-indent: 3em;
@@ -127,14 +137,16 @@
 </head>
 <body>
   <div class="square"></div>
-  <h3 class="judul"><%= data.judul %></h3>
+  <div class="card-judul">
+    <h3 class="judul"><%= data.judul %></h3>
+  </div>
   <div class="square2">
     <div class="isi-square">
       <div class="info">
         <p><%= data.month %> MINGGU KE-<%= data.week %></p>
       </div>
       <div class="info2">
-        <p><%= data.rentang_tanggal %> <%= data.year %></p>
+        <p><%= data.rentang_tanggal %> <%= data.month %> <%= data.year %></p>
       </div>
       <div class="gambar">
         <img style="width: 190px; margin-bottom: -180px;" src="http://localhost:3000/uploads/FSL.png" alt="FSL">
@@ -193,15 +205,36 @@
 
 <p class="paragraf-rapi"><%= data.penutup || '-' %></p>
   <div class="footer paragraf-rapi">
-    <p style="margin-bottom: -16px;">Batu Ampar, <%= data.report_date 
+    <div class="row">
+      <div class="col-6">
+        <p style="margin-bottom: -16px;">Batu Ampar, <%= data.report_date 
         ? new Date(data.report_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) 
         : '' %></p>
-    <p>Dibuat oleh,</p>
-    <div class="sign">
-      <img src="http://localhost:3000/uploads/sign-removebg-preview.png" alt="sign">
+        <p>Dibuat oleh,</p>
+        <div class="sign">
+          <% if (data.created_by && data.created_by.toLowerCase() === 'ludgerus') { %>
+            <img src="http://localhost:3000/uploads/sign-lud (2).png" alt="Ludgerus">
+          <% } else if (data.created_by && data.created_by.toLowerCase() === 'amin') { %>
+            <img src="http://localhost:3000/uploads/sign-amin.png" alt="Amin">
+          <% } %>
+        </div>
+        <p style="margin-bottom: -17px;"><%= data.created_by %></p>
+        <p><%= data.created_title %></p>
+      </div>
+      <div class="col-6" style="margin-top: 26px; margin-right: 43px;">
+        <p>Mengetahui,</p>
+        <div class="sign">
+          <% if (data.know && data.know.toLowerCase() === 'ludgerus') { %>
+            <img src="http://localhost:3000/uploads/sign-lud (2).png" alt="Ludgerus">
+          <% } else if (data.know && data.know.toLowerCase() === 'amin') { %>
+            <img src="http://localhost:3000/uploads/sign-amin.png" alt="Amin">
+          <% } %>
+        </div>
+        <p style="margin-bottom: -17px;"><%= data.know %></p>
+        <p><%= data.jabatan %></p>
+      </div>
+
     </div>
-    <p style="margin-bottom: -15px;"><%= data.created_by %></p>
-    <p><%= data.created_title %></p>
   </div>
 </body>
 <script>

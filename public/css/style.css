@@ -169,6 +169,23 @@ body {
   opacity: 0;
   transition: opacity 0.5s ease;
 }
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
 
 @keyframes slideIn {
   from { transform: translateX(100%); opacity: 0; }

@@ -51,8 +51,18 @@
   </div>
 
   <div class="card mt-2">
-    <h3>👤 Dibuat oleh</h3>
-    <p><%= laporan.created_by %> — <%= laporan.created_title %></p>
+    <div class="row">
+      <div class="col-6">
+        <h3>👤 Dibuat oleh</h3>
+        <p><%= laporan.created_by %> - <%= laporan.created_title %></p>
+      </div>
+      <div class="col-6" style="margin-left: 5mm;">
+        <h3>🆔 Mengetahui</h3>
+        <p><%= laporan.know || '-' %> - <%= laporan.jabatan || '-' %> </p>
+        <p></p>
+      </div>
+    </div>
+    
   </div>
 
   <div class="card-actions">

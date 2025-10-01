@@ -4,8 +4,8 @@ const pool = require('../db');
 async function create(laporan) {
   const query = `
     INSERT INTO laporan
-    (month, week, year, location, report_date, created_by, created_title, items, other_info, penutup, rentang_tanggal, judul)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+    (month, week, year, location, report_date, created_by, created_title, items, other_info, penutup, rentang_tanggal, judul, know, jabatan)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
     RETURNING *;
   `;
   const values = [
@@ -20,7 +20,9 @@ async function create(laporan) {
     laporan.other_info,
     laporan.penutup,
     laporan.rentang_tanggal,
-    laporan.judul
+    laporan.judul,
+    laporan.know,
+    laporan.jabatan
   ];
   const result = await pool.query(query, values);
   return result.rows[0];
@@ -51,8 +53,10 @@ async function update(id, laporan) {
       penutup=$10,
       rentang_tanggal=$11,
       judul=$12,
+      know=$13,
+      jabatan=$14,
       updated_at=now()
-    WHERE id=$13
+    WHERE id=$15
     RETURNING *;
   `;
   const values = [
@@ -68,6 +72,8 @@ async function update(id, laporan) {
     laporan.penutup,
     laporan.rentang_tanggal,
     laporan.judul,
+    laporan.know,
+    laporan.jabatan,
     id
   ];
   const result = await pool.query(query, values);

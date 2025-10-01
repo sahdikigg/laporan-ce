@@ -82,7 +82,9 @@ exports.createLaporan = async (req, res) => {
       other_info: req.body.other_info,
       penutup: req.body.penutup,
       rentang_tanggal: req.body.rentang_tanggal,
-      judul: req.body.judul
+      judul: req.body.judul,
+      know: req.body.know,
+      jabatan:req.body.jabatan
     };
 
     const result = await laporanModel.create(laporan);  // ✅ hanya sekali
@@ -178,6 +180,8 @@ exports.updateLaporan = async (req, res) => {
       created_title: body.created_title,
       penutup: body.penutup,
       judul: body.judul,
+      know:body.know,
+      jabatan:body.jabatan,
       items
     });
     return res.json({ success: true, message: 'Laporan berhasil diupdate' });
