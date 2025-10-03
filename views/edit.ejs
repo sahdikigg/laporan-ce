@@ -2,6 +2,11 @@
 
 <section>
   <h2>Edit Laporan</h2>
+  <% 
+    const namaOptions = ['Amin', 'Ludgerus'];
+    const jabatanOptions = ['Admin', 'CE Head', 'CE Div Staff'];
+    const mengetahuiOptions = ['Ludgerus', 'Amin'];
+  %>
   <form id="laporanForm" enctype="multipart/form-data">
     <div class="row">
       <label>Judul Laporan<input name="judul" value="<%= laporan.judul %>" required></label>
@@ -68,10 +73,52 @@
     <textarea name="penutup" rows="3"><%= laporan.penutup || '' %></textarea>
 
     <h3>Dibuat oleh</h3>
-    <div class="row">
+    <!-- <div class="row">
       <label>Nama <input name="created_by" value="<%= laporan.created_by %>" required></label>
       <label>Jabatan <input name="created_title" value="<%= laporan.created_title %>"></label>
+    </div> -->
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label for="created_by">Nama</label>
+          <select id="created_by" name="created_by" required class="form-control">
+            <% namaOptions.forEach(opt => { %>
+              <option value="<%= opt %>" <%= laporan.created_by === opt ? 'selected' : '' %>><%= opt %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="created_title">Jabatan</label>
+          <select id="created_title" name="created_title" class="form-control">
+            <% jabatanOptions.forEach(opt => { %>
+              <option value="<%= opt %>" <%= laporan.created_title === opt ? 'selected' : '' %>><%= opt %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="form-group">
+          <label for="know">Mengetahui</label>
+          <select id="know" name="know" class="form-control">
+            <% mengetahuiOptions.forEach(opt => { %>
+              <option value="<%= opt %>" <%= laporan.know === opt ? 'selected' : '' %>><%= opt %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="jabatan">Jabatan</label>
+          <select id="jabatan" name="jabatan" class="form-control">
+            <% jabatanOptions.forEach(opt => { %>
+              <option value="<%= opt %>" <%= laporan.jabatan === opt ? 'selected' : '' %>><%= opt %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
     </div>
+
 
     <div style="margin-top:12px">
       <button class="btn primary" type="submit">Update</button>
