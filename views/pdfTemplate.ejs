@@ -216,6 +216,8 @@
             <img src="http://localhost:3000/uploads/sign-lud (2).png" alt="Ludgerus">
           <% } else if (data.created_by && data.created_by.toLowerCase() === 'amin') { %>
             <img src="http://localhost:3000/uploads/sign-amin.png" alt="Amin">
+          <% } else if (data.created_by && data.created_by.toLowerCase() === 'yudistira') { %>
+            <img src="http://localhost:3000/uploads/sign-yudis.png" alt="Yudistira">
           <% } %>
         </div>
         <p style="margin-bottom: -17px;"><%= data.created_by %></p>
@@ -228,6 +230,8 @@
             <img src="http://localhost:3000/uploads/sign-lud (2).png" alt="Ludgerus">
           <% } else if (data.know && data.know.toLowerCase() === 'amin') { %>
             <img src="http://localhost:3000/uploads/sign-amin.png" alt="Amin">
+          <% } else if (data.know && data.know.toLowerCase() === 'yudistira') { %>
+            <img src="http://localhost:3000/uploads/sign-yudis.png" alt="Yudistira">
           <% } %>
         </div>
         <p style="margin-bottom: -17px;"><%= data.know %></p>
